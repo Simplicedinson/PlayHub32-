@@ -60,6 +60,7 @@ It connects real-time player management, mobile payments, flexible sessions, and
 - List of **active sessions** with real-time countdowns.
 - Access to **session history**, export tools, and usage stats.
 
+![PlayHub32 Logs & Anti-Fraud ](screenshot/login.png)
 ### 3. Logs & Anti-Fraud
 - **All transactions and session actions are logged** (usage, fraud attempts, etc.).
 - Complete searchable history by station or user.
