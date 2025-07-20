@@ -1,5 +1,5 @@
 # 🎮 PlayHub32: Automated Gaming Arena Management System
-
+![PlayHub32 Home Screen](screenshot/home.png)
 **PlayHub32** is a modern, end-to-end platform for fully automating gaming arena operations.  
 It connects real-time player management, mobile payments, flexible sessions, and a powerful admin dashboard—all in one sleek web system.
 
