@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>PlayHub 50 – Catalogue des jeux</title>
+  <!-- Tailwind & Alpine CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="/static/js/games.js" defer></script>
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body::before {
+      content:""; position:fixed; inset:0; z-index:-2;
+      background: url('/static/images/acceuil.png') center/cover no-repeat;
+      filter: brightness(.4);
+    }
+    body::after {
+      content:""; position:fixed; inset:0; z-index:-1;
+      background: radial-gradient(circle at 60% 20%, #ff510025 0%, transparent 70%),
+                  linear-gradient(120deg, #1b003d50 0%, #0c1a2e55 100%);
+    }
+    .gamer-navbar { font-family: 'Orbitron', sans-serif; }
+    .gamer-navbar .nav-link {
+      position: relative; padding: 10px 22px; font-size: 1.17rem;
+      font-weight: bold; color: #fff; border-radius: 0.85em; letter-spacing: 2px;
+      background: linear-gradient(92deg, #191919 80%, #262626 100%);
+      box-shadow: 0 0 12px #ff510099, 0 0 2px #fff1;
+      border: 2.3px solid transparent;
+      text-shadow: 0 0 9px #ff5100cc, 0 0 18px #ffd700aa, 0 0 2px #fff;
+      transition: background 0.16s, box-shadow 0.16s, border-color 0.15s, color 0.15s, transform 0.16s;
+    }
+    .gamer-navbar .nav-link:hover, .gamer-navbar .nav-link:focus {
+      background: linear-gradient(92deg, #ff5100 5%, #ffcf00 60%, #06f6f5 95%);
+      color: #151515;
+      box-shadow: 0 0 28px 8px #ff5100cc, 0 0 12px #ffcf0099, 0 0 1px #fff;
+      border-color: #ffcf00;
+      transform: scale(1.07) rotate(-1deg);
+      text-shadow: 0 0 12px #fff5, 0 0 7px #ff5100a0;
+    }
+    @media (max-width: 640px) {
+      .gamer-navbar {
+        flex-direction: row;
+        gap: 3vw;
+        justify-content: center;
+        top: unset !important; bottom: 14px; left: 50%; right: unset;
+        transform: translateX(-50%);
+        background: rgba(28,28,28,0.87);
+        padding: 7px 12px 5px 12px; border-radius: 1.2em;
+        box-shadow: 0 8px 24px #000a;
+      }
+      .gamer-navbar .nav-link { font-size: 1.03rem; padding: 8px 13px; margin: 0; }
+    }
+    .gamer-glow {
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-shadow:
+        0 0 18px #ff5100,
+        0 0 32px #06f6f5,
+        0 0 4px #ffcf00,
+        0 0 2px #fff;
+      letter-spacing: 2.5px;
+      background: linear-gradient(92deg, #ff5100 20%, #ffd700 70%, #06f6f5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.4rem;
+      line-height: 1.15;
+      animation: gamer-flicker 2.5s infinite alternate;
+    }
+    @keyframes gamer-flicker {
+      from { filter: brightness(1.2) drop-shadow(0 0 8px #ff5100) }
+      to   { filter: brightness(1.5) drop-shadow(0 0 22px #06f6f5) }
+    }
+    /* Card effet glass + neon */
+    .card-gamer {
+      background: linear-gradient(135deg, rgba(34, 40, 56, 0.88) 70%, rgba(0, 0, 0, 0.85) 100%);
+      border-radius: 2.3rem;
+      overflow: hidden;
+      border: 2.7px solid #ff5100;
+      box-shadow: 0 10px 44px #000c, 0 0 20px 5px #ff510088;
+      position: relative;
+      transition: box-shadow 0.18s, border-color 0.13s, transform 0.18s;
+    }
+    .card-gamer:hover {
+      box-shadow: 0 0 42px 12px #ffcf00bb, 0 0 20px #ff5100a8;
+      border-color: #ffcf00;
+      transform: scale(1.02) rotate(-1deg);
+      z-index: 3;
+    }
+    .card-img {
+      width: 100%; height: 200px; object-fit: cover;
+      border-bottom: 2px solid #ff5100;
+      transition: filter 0.18s, transform 0.18s;
+      filter: brightness(.92) contrast(1.08) drop-shadow(0 0 16px #06f6f580);
+    }
+    .card-gamer:hover .card-img {
+      filter: brightness(1.05) contrast(1.11) drop-shadow(0 0 32px #ff5100b0);
+      transform: scale(1.06);
+    }
+    .card-info {
+      padding: 1.5rem 1.1rem 1.1rem 1.1rem;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.7rem;
+    }
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.35rem;
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: 1.3px;
+      margin-bottom: 0.2em;
+      text-shadow: 0 0 9px #06f6f5a0, 0 0 2px #fff9;
+    }
+    .card-gamer .badge-nouveau {
+      background: linear-gradient(95deg, #ff5100 40%, #ffcf00 90%);
+      color: #fff; font-family: 'Orbitron', sans-serif; font-size: .98rem;
+      padding: 3px 14px 2px 14px; border-radius: 1em; margin-bottom: 0.25em;
+      box-shadow: 0 0 12px #ffd70099, 0 0 2px #fff;
+      letter-spacing: 1.5px;
+      animation: gamer-flicker 1.2s infinite alternate;
+    }
+    .card-gamer .see-more-btn {
+      margin-top: 0.5em;
+      padding: 8px 30px;
+      border-radius: 1.4em;
+      background: linear-gradient(92deg, #06f6f5 10%, #ff5100 90%);
+      color: #222; font-weight: bold; font-family: 'Orbitron', sans-serif; font-size: 1.09rem;
+      letter-spacing: 1.3px;
+      box-shadow: 0 0 12px #ffcf00c5, 0 0 2px #06f6f5a0;
+      border: none;
+      cursor: pointer;
+      transition: background 0.14s, color 0.12s, transform 0.13s;
+    }
+    .card-gamer .see-more-btn:hover {
+      background: linear-gradient(92deg, #ff5100 20%, #ffcf00 90%);
+      color: #06f6f5;
+      transform: scale(1.07);
+      box-shadow: 0 0 16px #ff5100b8;
+    }
+    /* Responsive game cards */
+    @media (max-width: 850px) {
+      .card-img { height: 140px; }
+      .card-gamer { border-radius: 1.4rem; }
+    }
+    @media (max-width: 500px) {
+      .card-img { height: 95px; }
+      .card-gamer { border-radius: 0.88rem; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center pt-12 text-white bg-black/80" x-data="gameList()" x-init="init()" >
+
+  <!-- Navbar gamer -->
+  <nav class="fixed top-6 right-8 md:top-6 md:right-8 z-50 flex gap-4 md:gap-5 gamer-navbar"
+      style="backdrop-filter: blur(7px);">
+    <a href="/" class="nav-link">🏠 Accueil</a>
+    <a href="/games" class="nav-link">🎮 Jeux</a>
+    <a href="/extend" class="nav-link">⏱️ Prolonger</a>
+    <a href="/session/manage" class="nav-link">🔄 Relancer</a>
+  </nav>
+
+  <!-- Titre glow -->
+  <h1 class="gamer-glow mt-3 mb-10 text-center select-none">CATALOGUE DE JEUX</h1>
+
+  <div class="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9 px-4 pb-20">
+    <template x-for="(g,idx) in games" :key="g.id">
+      <div class="card-gamer" x-transition:enter="transition duration-500 ease-out" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
+        <img :src="g.img" :alt="g.name" class="card-img" />
+        <div class="card-info">
+          <div x-show="g.nouveau" class="badge-nouveau" x-transition>NEW</div>
+          <h2 class="card-title" x-text="g.name"></h2>
+          <p class="text-base text-gray-200 mb-2" x-text="g.desc"></p>
+          
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    function gameList(){
+      return {
+        games: [],
+        init(){
+          fetch('/games-data')
+            .then(r=>r.json())
+            .then(d=>{
+              // patch pour un affichage démo si pas de champ desc/nouveau
+              this.games = d.map(g => ({
+                ...g,
+                desc: g.desc || "Jeu à découvrir!",
+                nouveau: g.nouveau || false
+              }))
+            });
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
