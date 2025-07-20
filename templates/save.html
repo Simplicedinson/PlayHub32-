@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="utf-8"/>
+  <title>Session sauvegardée</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #ff5100; }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: -1;
+      background: url('/static/images/acceuil.png') center/cover no-repeat;
+      filter: brightness(.22) contrast(.75);
+    }
+    .gamer-title {
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 8px #ff5100, 0 0 20px #000;
+      letter-spacing: 2px;
+    }
+    .gamer-block {
+      border: 2.5px solid;
+      border-image: linear-gradient(90deg, #ff5100, #ffcf00, #06f6f5, #ff5100) 1;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 32px #ff5100a0;
+      background: linear-gradient(120deg, rgba(22,22,22,0.96) 60%, rgba(0,0,0,0.87) 100%);
+      backdrop-filter: blur(9px);
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center text-white px-4">
+  <div class="w-full max-w-lg mx-auto gamer-block p-12 rounded-3xl shadow-2xl">
+    <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center gamer-title tracking-wide">
+      💾 Session sauvegardée
+    </h1>
+
+    <div class="bg-[#222] border-2 border-[#ff5100] rounded-2xl p-8 shadow-xl text-center">
+      <p class="text-lg mb-4">
+        Ta session est maintenant <span class="text-yellow-400 font-bold">en pause</span>.<br>
+        Tu pourras la reprendre plus tard avec ton code ticket !
+      </p>
+      <div class="mb-4">
+        <span class="block text-xl font-bold text-[#ffcf00] mb-1">Référence :</span>
+        <span class="block text-2xl font-mono tracking-widest">{{ ref_code }}</span>
+      </div>
+      <div class="mb-4">
+        <span class="block text-xl font-bold text-[#06f6f5] mb-1">Temps restant :</span>
+        <span class="block text-2xl">{{ minutes_left }} minutes</span>
+      </div>
+      <div class="mt-6 text-[#ff5100] font-bold">
+        🚀 Reviens vite profiter de ton temps restant&nbsp;!
+      </div>
+    </div>
+    
+    <div class="mt-8 text-center">
+      <a href="/" class="inline-block px-6 py-3 rounded-xl bg-[#ff5100] hover:bg-[#ff7300] font-bold text-white gamer-title shadow-md transition">
+        ⬅️ Retour
+      </a>
+    </div>
+  </div>
+</body>
+</html>

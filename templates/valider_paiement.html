@@ -1,0 +1,145 @@
+{% extends "admin_base.html" %}
+{% block title %}Valider un paiement - PlayHub32{% endblock %}
+
+{% block main_content %}
+    <style>
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 13px 14px;
+            margin-bottom: 20px;
+            border-radius: 9px;
+            border: 2px solid #13ffe280;
+            background: #191a2c;
+            color: #13ffe2;
+            font-size: 1.12em;
+            font-family: 'Orbitron', 'Roboto', Arial, sans-serif;
+            box-shadow: 0 0 8px #13ffe258 inset, 0 0 0 #fff;
+            outline: none;
+            transition: border 0.18s, background 0.18s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            border: 2px solid #ff3c73;
+            background: #232642;
+            color: #fff;
+            box-shadow: 0 0 14px #13ffe2a9, 0 0 6px #ff3c7380;
+        }
+        label {
+            font-weight: bold;
+            color: #13ffe2;
+            margin-bottom: 6px;
+            display: block;
+            text-shadow: 0 0 7px #ff3c73a0, 0 0 1px #fff;
+            letter-spacing: 1px;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            margin-top: 8px;
+            background: linear-gradient(90deg, #13ffe2, #ff3c73 90%);
+            color: #191a2c;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.18em;
+            letter-spacing: 1.2px;
+            font-family: 'Orbitron', Arial, sans-serif;
+            cursor: pointer;
+            box-shadow: 0 0 20px #13ffe2a9, 0 0 3px #fff;
+            text-shadow: 0 0 2px #fff, 0 0 8px #ff3c7388;
+            transition: background 0.16s, color 0.14s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff3c73 10%, #13ffe2 100%);
+            color: #fff;
+        }
+        .flash {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 14px 10px;
+            border-radius: 9px;
+            font-weight: bold;
+            font-size: 1.09em;
+            background: #14eeb1dd;
+            color: #033e2d;
+            box-shadow: 0 0 18px #13ffe289;
+        }
+        .flash.error {
+            background: #e74c3ccc;
+            color: #fff;
+        }
+    </style>
+
+    <h1 style="
+    text-align:center;
+    margin-bottom:32px;
+    color: #05cddfe9;
+    text-shadow: 0 0 14px #07b5eaf0, 0 0 32px #fff2;
+    font-family: 'Orbitron', Arial, sans-serif;
+">💸 Valider un Paiement</h1>
+
+    {% if flash_message %}
+        <div class="flash {{ flash_type }}">{{ flash_message }}</div>
+    {% endif %}
+
+    <form method="POST" style="
+        max-width: 520px;
+        margin: 0 auto;
+        background: #181b34;
+        padding: 38px 28px 28px 28px;
+        border-radius: 18px;
+        box-shadow: 0 0 36px #13ffe2cc, 0 0 0 #fff;
+        border: 2.5px solid #13ffe2cc;
+    ">
+        <label for="txn_id">ID de transaction</label>
+        <input type="text" name="txn_id" id="txn_id" required
+            placeholder="ex: PP250705.0929.D79213"
+            pattern="^[PM][PM]\d{6}\.\d{4}\.[A-Z0-9]{6}$"
+            title="Exemple : PP250705.0929.D79213"
+            maxlength="20">
+
+        <label for="operator">Opérateur</label>
+        <select name="operator" id="operator" required>
+            <option value="">-- Choisir --</option>
+            <option value="Orange">Orange Money</option>
+            <option value="MTN">MTN Money</option>
+        </select>
+
+        <label for="amount">Montant (F CFA)</label>
+        <input type="number" name="amount" id="amount" required>
+
+        <label for="client_name">Nom du client</label>
+        <input type="text" name="client_name" id="client_name" required>
+
+        <label for="client_phone">Numéro du client</label>
+        <input type="text" name="client_phone" id="client_phone" required
+            placeholder="ex: 674755632"
+            pattern="6\d{8}"
+            maxlength="9"
+            title="Numéro au format: 674755632">
+
+        <button type="submit">✅ Enregistrer le paiement</button>
+    </form>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formatage automatique de l'ID de transaction
+        const txnInput = document.getElementById('txn_id');
+        txnInput.addEventListener('input', function() {
+            let value = txnInput.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            value = value.slice(0,18);
+            if (value.length > 8) value = value.slice(0,8) + '.' + value.slice(8);
+            if (value.length > 13) value = value.slice(0,13) + '.' + value.slice(13);
+            txnInput.value = value;
+        });
+
+        // Formatage automatique du numéro de téléphone
+        const phoneInput = document.getElementById('client_phone');
+        phoneInput.addEventListener('input', function() {
+            let value = phoneInput.value.replace(/\D/g, '');
+            if (value.length > 0 && value[0] !== '6') value = '6' + value.slice(1);
+            value = value.slice(0, 9);
+            phoneInput.value = value;
+        });
+    });
+    </script>
+{% endblock %}

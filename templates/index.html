@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>PlayStation Hub Kiosk</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>PlayStation Hub 50 – Paiement</h1>
+
+  {% if ref %}
+    <h2>Station {{ station }} – {{ duration }} min</h2>
+    <p>Scanne ce QR (ou clique) pour payer :</p>
+    <p><a href="{{ pay_url }}" target="_blank">{{ pay_url }}</a></p>
+    <p>Référence : {{ ref }}</p>
+  {% else %}
+    <form method="post" action="/pay">
+      <label>Station (1-8)
+        <input type="number" name="station_id" min="1" max="8" required>
+      </label><br>
+      <label>Durée (min)
+        <select name="duration">
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="60" selected>60</option>
+        </select>
+      </label><br>
+      <label>Opérateur :
+        <select name="operator">
+          <option value="orange">Orange Money</option>
+          <option value="mtn">MTN MoMo</option>
+        </select>
+      </label><br>
+      <button type="submit">Payer</button>
+    </form>
+  {% endif %}
+</body>
+</html>

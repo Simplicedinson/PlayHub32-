@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin PlayHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            min-height: 100vh;
+            font-family: 'Orbitron', Arial, sans-serif;
+            color: #ffeedd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000; /* fallback noir */
+            position: relative;
+            overflow: hidden;
+        }
+        /* IMAGE DE FOND EN BACKGROUND VRAIMENT DISTINCTE + FILTRE */
+        body::before {
+            content: "";
+            position: fixed;
+            z-index: 0;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: url('/static/images/acceuil.png') center center / cover no-repeat;
+            filter: brightness(0.22) contrast(0.75);
+            pointer-events: none;
+        }
+        .container {
+            background: linear-gradient(135deg, #181922f0 80%, #340909fa 100%);
+            box-shadow: 0 4px 48px 0 #ff380044, 0 0 0 10px #140b20b0;
+            border-radius: 22px;
+            padding: 46px 38px 32px 38px;
+            max-width: 390px;
+            width: 96vw;
+            position: relative;
+            border: 2.5px solid #ff9f29;
+            animation: up 1.2s cubic-bezier(.56,.06,.52,.94);
+            z-index: 2;
+        }
+        @keyframes up {
+            0%   { opacity: 0; transform: scale(0.9) translateY(80px);}
+            100% { opacity: 1; transform: scale(1) translateY(0);}
+        }
+        .container:before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: -16px;
+            border-radius: 32px;
+            background: linear-gradient(60deg, #ff9f29 10%, #ff3844 44%, #1fd1f9 70%, #0b0a13 100%);
+            opacity: 0.13;
+            filter: blur(7px);
+        }
+        h2 {
+            text-align: center;
+            color: #ff9f29;
+            margin-bottom: 28px;
+            font-size: 2.25em;
+            letter-spacing: 3px;
+            text-shadow: 0 0 16px #ff9f29a2, 0 0 4px #ff3844;
+            font-weight: 900;
+        }
+        label {
+            color: #ffbd59;
+            margin-top: 10px;
+            display: block;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 4px #ff9f29a3;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 13px 14px;
+            margin: 10px 0 18px 0;
+            background: #161823f7;
+            border: 1.7px solid #ff3844;
+            border-radius: 8px;
+            color: #ffeedd;
+            font-size: 1.15em;
+            font-family: inherit;
+            letter-spacing: 1.2px;
+            outline: none;
+            box-shadow: 0 0 8px #ff9f2915 inset;
+            transition: border 0.16s, box-shadow 0.19s, color 0.14s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ff9f29;
+            box-shadow: 0 0 18px #ff9f29b1;
+            color: #fffbe3;
+        }
+        button {
+            width: 100%;
+            padding: 15px 0;
+            background: linear-gradient(90deg, #ff3844 10%, #ff9f29 90%);
+            color: #fffbe3;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.18em;
+            font-family: inherit;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-top: 13px;
+            box-shadow: 0 0 15px #ff9f29b8, 0 0 8px #ff3844a8;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.21s, color 0.15s, box-shadow 0.21s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #ff9f29 10%, #ff3844 99%);
+            color: #fffd6b;
+            box-shadow: 0 0 32px #ff3844cc;
+        }
+        .error {
+            color: #ff3844;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 1.06em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 6px #ff384444;
+        }
+        .glow-bar {
+            width: 108%;
+            height: 4.5px;
+            background: linear-gradient(90deg, #ff3844, #ff9f29, #fffb00, #ff3844 99%);
+            border-radius: 7px;
+            margin: -36px 0 24px -4%;
+            box-shadow: 0 0 14px #ff9f29b0, 0 0 14px #ff3844a0;
+            animation: glowmove 5s linear infinite;
+            background-size: 500% 100%;
+        }
+        @keyframes glowmove {
+            0% { background-position: 0% 0%;}
+            100% { background-position: 500% 0%;}
+        }
+        @media (max-width: 600px) {
+            .container { padding: 18px 3vw 12px 3vw;}
+        }
+    .gamer-navbar {
+            position: fixed;
+            top: 24px;
+            right: 38px;
+            display: flex;
+            gap: 22px;
+            z-index: 30;
+            background: rgba(12,9,18,0.80);
+            border-radius: 18px;
+            padding: 10px 30px;
+            box-shadow: 0 2px 16px #1fd1f955;
+            font-size: 1.15em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            backdrop-filter: blur(1.5px);
+        }
+    .gamer-navbar a {
+        color: #fffbe3;
+        text-decoration: none;
+        transition: color 0.17s, text-shadow 0.2s;
+        text-shadow: 0 0 8px #1fd1f980, 0 0 2px #000;
+    }
+    .gamer-navbar a:hover {
+        color: #ff9f29;
+        text-shadow: 0 0 12px #ff3844cc, 0 0 2px #fff;
+    }
+    @media (max-width: 700px) {
+        .gamer-navbar {
+            top: 12px;
+            right: 6vw;
+            padding: 8px 8vw;
+            font-size: 1em;
+            gap: 13px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <nav class="fixed top-6 right-8 flex gap-5 z-50 gamer-navbar">
+    <a href="/">🏠 Accueil</a>
+    <a href="/games">🎮 Jeux</a>
+    </nav>
+
+    <div class="container">
+        <div class="glow-bar"></div>
+        <h2>ADMIN LOGIN</h2>
+        <form id="admin-login-form" autocomplete="off">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" required autocomplete="off">
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" required autocomplete="off">
+
+            <button type="submit">Connexion</button>
+        </form>
+        <div id="error-message" class="error"></div>
+    </div>
+
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/admin/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                window.location.href = '/admin/dashboard';
+            } else {
+                document.getElementById('error-message').textContent = result.detail || result.message || 'Erreur de connexion';
+            }
+        });
+    </script>
+</body>
+</html>

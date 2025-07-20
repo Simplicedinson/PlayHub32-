@@ -1,0 +1,216 @@
+{% extends "admin_base.html" %}
+{% block title %}Historique - PlayHub32{% endblock %}
+
+{% block main_content %}
+    <style>
+        .selector-bar {
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 32px; gap: 18px;
+        }
+        .selector-bar label {
+            color: #13ffe2;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-size: 1.09em;
+        }
+        .selector-select {
+            background: #181b34;
+            color: #ff9f29;
+            border-radius: 10px;
+            padding: 12px 30px;
+            border: 2.5px solid #13ffe2;
+            font-size: 1.13em;
+            font-family: inherit;
+            outline: none;
+            margin-left: 12px;
+            box-shadow: 0 0 19px #13ffe2b3;
+            transition: border 0.13s;
+        }
+        .history-table {
+            width: 98%;
+            max-width: 1220px;
+            background: linear-gradient(120deg,rgba(19,19,34,0.96) 85%,rgba(38,27,75,0.98) 100%);
+            border-radius: 26px;
+            box-shadow: 0 0 54px #13ffe248, 0 0 0 #fff;
+            margin: 42px auto 38px auto;
+            overflow-x: auto;
+            border: 2.5px solid #13ffe2bb;
+            backdrop-filter: blur(4px);
+            position: relative;
+            z-index: 3;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.42em;
+            font-family: 'Roboto Mono', 'Orbitron', Arial, sans-serif;
+        }
+        th, td {
+            padding: 15px 9px;
+            text-align: center;
+            font-size: 1.08em;
+            border-radius: 13px;
+        }
+        th {
+            background: linear-gradient(90deg,#131527 60%,#232642 100%);
+            color: #13ffe2;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 1.16em;
+            letter-spacing: 1.3px;
+            text-shadow: 0 0 12px #13ffe298, 0 0 4px #ff3c73bb;
+            border-bottom: 2px solid #13ffe270;
+        }
+        td {
+            background: rgba(29,32,64,0.93);
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 0 8px #13182b88 inset;
+            border-radius: 9px;
+        }
+        .idcell {
+            color: #ffb133; letter-spacing: 1.6px; font-size: 1.07em;
+            font-family: 'Roboto Mono', monospace;
+            text-shadow: 0 0 10px #ffb13366;
+        }
+        .operator-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.05em;
+            background: linear-gradient(90deg,#ffb133 60%,#fff4b2 100%);
+            color: #492a00;
+            border:1.7px solid #ffb133;
+            box-shadow: 0 0 12px #ffb13375;
+        }
+        .operator-badge.MTN {
+            background: linear-gradient(90deg,#ffe55a 50%,#fffba2 100%);
+            color: #31311c; border-color: #ffd700;
+            box-shadow: 0 0 11px #ffe55a66;
+        }
+        .used-badge {
+            background: linear-gradient(90deg,#13ffe2 80%,#2fffd5 100%);
+            color: #171d18; font-weight: bold; border-radius: 8px;
+            box-shadow: 0 0 7px #13ffe260;
+            padding: 6px 18px;
+        }
+        .notused-badge {
+            background: linear-gradient(90deg,#ff3c73 70%,#ffb133 100%);
+            color: #fff; font-weight: bold; border-radius: 8px;
+            box-shadow: 0 0 9px #ff3c73aa;
+            padding: 6px 18px;
+            text-shadow: 0 0 5px #ff3c73a4;
+        }
+        tr:nth-child(even) td { background:rgba(34,34,56,0.95);}
+        tr:hover td {
+            background: #2e2e56 !important;
+            color: #13ffe2;
+            box-shadow: 0 0 15px #13ffe288 inset;
+        }
+    </style>
+
+    <h1 style="color:#13ffe2;text-shadow:0 0 26px #13ffe2bb,0 0 8px #ff3c73cc;text-align:center;margin-bottom:18px;font-family:'Orbitron',Arial,sans-serif;letter-spacing:1.7px;">
+        <span style="font-size:1.17em;">📊</span> Historique
+    </h1>
+
+    <div class="selector-bar">
+        <form method="get" action="/admin/historique">
+            <label for="history_type">Voir :</label>
+            <select name="history_type" id="history_type" class="selector-select" onchange="this.form.submit()">
+                <option value="all" {% if selected == 'all' %}selected{% endif %}>Tout</option>
+                <option value="poste" {% if selected == 'poste' %}selected{% endif %}>Par Poste</option>
+                <option value="orange" {% if selected == 'orange' %}selected{% endif %}>Paiements Orange</option>
+                <option value="mtn" {% if selected == 'mtn' %}selected{% endif %}>Paiements MTN</option>
+            </select>
+            {% if selected == 'poste' %}
+                <select name="poste_id" class="selector-select" onchange="this.form.submit()">
+                    <option value="">--Choisir le poste--</option>
+                    {% for poste in postes %}
+                    <option value="{{ poste.id }}" {% if poste.id == poste_id %}selected{% endif %}>Poste {{ poste.id }} : {{ poste.name }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="history-table">
+        <table>
+            {% if selected == 'poste' %}
+            <thead>
+                <tr>
+                    <th>Heure</th>
+                    <th>Ref. Session</th>
+                    <th>Durée (min)</th>
+                    <th>Montant</th>
+                    <th>Num client</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sess in poste_sessions %}
+                <tr>
+                    <td>{{ sess.start_at.strftime('%d/%m/%y %H:%M') if sess.start_at else "-" }}</td>
+                    <td class="idcell">{{ sess.ref_code or '—' }}</td>
+                    <td>{{ sess.minutes_total }}</td>
+                    <td>
+                    {% if sess.offer %}
+                        {{ sess.amount}} F
+                    {% else %}
+                        –
+                    {% endif %}
+                                        </td>
+                    <td>{{ sess.phone }}</td>
+                    <td>
+                        <span class="badge {{ sess.status }}">{{ sess.status }}</span>
+                    </td>
+                </tr>
+                {% else %}
+                    <tr><td colspan="6" style="color:#888;">Aucune session trouvée</td></tr>
+                {% endfor %}
+            </tbody>
+            {% else %}
+            <thead>
+                <tr>
+                    <th>Heure</th>
+                    <th>ID</th>
+                    <th>Opérateur</th>
+                    <th>Montant</th>
+                    <th>Client</th>
+                    <th>Téléphone</th>
+                    <th>Validé par</th>
+                    <th>Utilisé ?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payment_logs %}
+                    {% if (selected == 'all') or
+                        (selected == 'orange' and p.operator == "Orange") or
+                        (selected == 'mtn' and p.operator == "MTN") %}
+                    <tr>
+                        <td>{{ p.validated_at.strftime('%d/%m/%y %H:%M') if p.validated_at else "-" }}</td>
+                        <td class="idcell">{{ p.txn_id }}</td>
+                        <td>
+                            <span class="operator-badge {% if p.operator == 'MTN' %}MTN{% endif %}">{{ p.operator }}</span>
+                        </td>
+                        <td>{{ p.amount }} F</td>
+                        <td>{{ p.client_name }}</td>
+                        <td>{{ p.client_phone }}</td>
+                        <td>{{ p.validated_by }}</td>
+                        <td>
+                            {% if p.is_used %}
+                                <span class="used-badge">Oui</span>
+                            {% else %}
+                                <span class="notused-badge">Non</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% else %}
+                    <tr><td colspan="8" style="color:#888;">Aucun paiement trouvé</td></tr>
+                {% endfor %}
+            </tbody>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}

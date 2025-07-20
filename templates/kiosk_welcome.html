@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <title>PlayHub 32 – Choisissez votre formule</title>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="/static/js/welcome.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand:#ff5100; --cyan:#0ff6f4; }
+    body{font-family:'Orbitron',sans-serif;min-height:100vh;position:relative;}
+    body::before{content:"";position:fixed;inset:0;z-index:-2;background:url('/static/images/acceuil.png') center/cover no-repeat;}
+    body::after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 120% 88% at 50% 20%,rgba(16,16,32,0.96)0%,rgba(4,4,10,0.78)100%);pointer-events:none;}
+    /* --- composants réutilisables --- */
+    .gamer-navbar a{font-family:'Orbitron',sans-serif;background:rgba(10,10,10,0.97);border-radius:0.8em;font-size:1.2rem;padding:0.5em 1.5em;margin-left:0.3em;color:#fff;border:2.5px solid var(--cyan);box-shadow:0 0 10px #0ff6f4aa;letter-spacing:1px;transition:color .14s,background .18s,border .17s,box-shadow .17s;display:flex;align-items:center;gap:0.4em;text-shadow:0 2px 5px #000a;}
+    .gamer-navbar a:hover{background:var(--cyan);color:#23243a;border-color:var(--brand);box-shadow:0 0 24px #ff5100aa,0 0 10px #0ff6f4;}
+    .neon{color:var(--brand);text-shadow:0 2px 0 #120a00,0 1px 2px #ff5100cc;letter-spacing:1px;}
+    .neon-cyan{color:var(--cyan);text-shadow:0 2px 0 #002222,0 1px 2px #0ff6f4cc;letter-spacing:2px;}
+    .cyber-card{border:2.5px solid var(--brand);background:linear-gradient(120deg,#191919 90%,#23243a 100%);border-radius:1.6em;box-shadow:0 4px 24px #ff510055,0 1px 10px #0ff6f455,0 1px 2px #fff2;transition:transform .18s cubic-bezier(.34,1.36,.64,1),box-shadow .18s;cursor:pointer;position:relative;overflow:hidden;}
+    .cyber-card:hover{transform:scale(1.05) translateY(-6px);box-shadow:0 8px 34px #ff5100cc,0 0 20px #0ff6f4cc;border-color:var(--cyan);z-index:10;}
+    .cyber-badge{position:absolute;top:1.2rem;right:1.4rem;background:linear-gradient(90deg,#06f6f5,#ffcf00);color:#191919;font-size:1.05rem;font-weight:bold;border-radius:999px;box-shadow:0 0 8px #06f6f5,0 0 8px #ffcf00;padding:0.21em 1.1em;animation:badge-pulse 1.8s infinite alternate cubic-bezier(.6,.15,.35,1.3);border:2px solid #fff8;}
+    @keyframes badge-pulse{0%{filter:brightness(1.2);}100%{filter:brightness(2.2);}}
+    /* Responsive */
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr!important;}}
+    @media(max-width:700px){.grid{grid-template-columns:1fr!important;}.cyber-card{margin-bottom:2em;}}
+    /* --- Modal Neon --- */
+    .neon-modal{background:rgba(12,14,28,0.98);box-shadow:0 0 60px #0ff6f455,0 0 80px #ff510066;border-radius:2.5rem;border:4px solid var(--cyan);animation:neon-flicker 2.7s infinite alternate;}
+    @keyframes neon-flicker{0%,100%{box-shadow:0 0 30px #0ff6f466,0 0 14px #ff510066;}55%{box-shadow:0 0 70px #0ff6f4cc,0 0 20px #ff5100cc;}}
+    .pay-title-glow{color:#fff;text-shadow:0 0 16px var(--brand),0 2px 6px #fff,0 0 1px var(--cyan);letter-spacing:2px;}
+    .gamer-seat-btn{background:linear-gradient(180deg,#222a 60%,#101010 100%);color:var(--cyan);border:2.5px solid var(--cyan);font-size:1.35rem;font-family:'Orbitron',sans-serif;border-radius:0.7em;padding:.65em 0;transition:all 0.18s cubic-bezier(.4,2,.4,1.1);box-shadow:0 2px 6px #0ff6f422;font-weight:900;filter:brightness(1.10);text-shadow:0 1px 5px #0ff6f4cc;}
+    .gamer-seat-btn.active,.gamer-seat-btn:hover{background:linear-gradient(90deg,var(--cyan),var(--brand)85%);color:#fff;border-color:var(--brand);transform:scale(1.08);box-shadow:0 0 24px #ff510099,0 2px 10px #0ff6f499;z-index:5;}
+    .arcade-pay-btn{background:linear-gradient(90deg,var(--brand),var(--cyan)90%);color:#fff;font-family:'Orbitron',sans-serif;font-size:1.5rem;border:none;border-radius:1.2em;box-shadow:0 6px 40px #0ff6f444,0 2px 18px #ff510099;transition:background .13s,box-shadow .18s,transform .16s;letter-spacing:1px;text-shadow:0 2px 8px #ff510099,0 2px 2px #222;filter:brightness(1.18);margin-bottom:.2em;}
+    .arcade-pay-btn:hover{background:linear-gradient(100deg,#fff,var(--brand)70%,var(--cyan)100%);color:#191919;filter:brightness(1.32);transform:scale(1.02) translateY(-2px);box-shadow:0 8px 50px #0ff6f4bb,0 4px 16px #ff510099;}
+  </style>
+</head>
+<body class="h-full flex flex-col items-center justify-center px-4" x-data="pricing()">
+
+  <!-- Navbar gamer -->
+  <nav class="fixed top-6 left-8 z-50 gamer-navbar">
+    <a href="/verifier-paiement">✅ Vérifier mon paiement</a>
+  </nav>
+
+  <nav class="fixed top-6 right-8 flex gap-5 z-50 gamer-navbar">
+    <a href="/games">🎮 Jeux</a>
+    <a href="/extend">⏱️ Prolonger</a>
+    <a href="/session/manage">🔄 Relancer/Sauvegader</a>
+    <a href="/admin">🛠️ Admin</a>
+  </nav>
+
+  <!-- Logo & tagline -->
+  <header class="mb-12 flex flex-col items-center select-none">
+    <img src="/static/logo.png" alt="PlayHub 32" class="h-32 drop-shadow-2xl mb-4" loading="lazy"/>
+    <p class="text-2xl neon font-bold tracking-wider">Douala · Bonamoussadi</p>
+  </header>
+
+  <!-- Titre session -->
+  <section class="w-full max-w-5xl">
+    <h2 class="text-center text-4xl neon font-extrabold mb-12 tracking-wider" style="font-family:'Orbitron',sans-serif;">
+      🚀 Choisissez votre <span class="neon-cyan">session</span>
+    </h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Boucle dynamique d'offres -->
+      <template x-for="(offer,i) in offers" :key="offer.id">
+        <button @click="selectOffer(offer)"
+          class="cyber-card flex flex-col p-8 sm:p-7 rounded-3xl shadow-xl"
+          :class="offer.decoy ? 'opacity-40 cursor-not-allowed grayscale' : ''">
+          <h3 class="text-2xl md:text-3xl font-extrabold mb-2 neon" x-text="offer.label"></h3>
+          <span class="text-4xl md:text-5xl font-black neon-cyan mb-1" x-text="formatPrice(offer.price)"></span>
+          <template x-if="offer.saving">
+            <span class="cyber-badge">💸 <span x-text="offer.saving"></span>%</span>
+          </template>
+          <div class="mt-2 text-sm text-gray-300 opacity-90" x-text="offer.desc"></div>
+        </button>
+      </template>
+    </div>
+  </section>
+
+  <!-- MODAL PAYMENT GAMER / HOLOGRAPHIQUE -->
+  <div x-show="modal" x-transition.opacity class="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-50">
+    <div class="relative neon-modal px-8 py-7 rounded-3xl max-w-[420px] w-full mx-2 shadow-2xl flex flex-col items-center border-4 border-cyan-400 hover:border-orange-500 transition-all duration-200">
+      <button class="absolute top-3 right-5 text-3xl font-extrabold neon" @click="modal=false">&times;</button>
+      <div class="flex items-center gap-3 mb-3">
+        <span class="text-3xl">💳</span>
+        <span class="font-extrabold text-3xl tracking-wide pay-title-glow">Paiement</span>
+      </div>
+      <div class="mb-3 text-left w-full text-white"> 
+        <div class="mb-1 text-lg font-semibold text-white/90">
+          Durée : <span class="neon ml-1" x-text="current.label"></span>
+        </div>
+        <div class="mb-3 text-lg font-semibold text-white/90">
+          Montant : <span class="neon-cyan ml-1" x-text="formatPrice(current.price)"></span>
+        </div>
+      </div>
+      <div class="mb-2 text-base font-bold w-full text-white text-left">Choisissez votre poste :</div>
+      <div class="grid grid-cols-5 gap-3 mb-5 w-full">
+        <template x-for="st in stations" :key="st.id">
+          <button
+            @click="st.status === 'FREE' ? stationSel = st.id : null"
+            :disabled="st.status !== 'FREE'"
+            :class="[
+              'gamer-seat-btn',
+              stationSel === st.id ? 'active' : '',
+              st.status !== 'FREE' ? 'opacity-40 cursor-not-allowed grayscale' : ''
+            ]"
+          >
+            <span x-text="st.id"></span>
+          </button>
+        </template>
+      </div>
+      <!-- Champ Payment ID -->
+      <label class="block text-white w-full mb-6">
+        <span class="block mb-1 text-base font-bold tracking-wider">Payment&nbsp;ID</span>
+        <input type="text" name="txn_id" id="txn_id" required
+               x-model="payId"
+               class="w-full rounded-xl px-4 py-3 bg-neutral-900 border-2 border-[#06f6f5] text-[#0ff6f4] gamer-title text-[1.1rem] font-bold focus:outline-none focus:ring-2 focus:ring-[#06f6f5] transition"
+               placeholder="EX: PP250705.0929.D79213"
+               pattern="^[PM][PM]\\d{6}\\.\\d{4}\\.[A-Z0-9]{6}$"
+               title="Format : PP250705.0929.D79213"
+               maxlength="20" />
+      </label>
+      <button @click="pay()" :disabled="!validForm"
+        class="arcade-pay-btn w-full py-4 mt-2 font-extrabold text-2xl disabled:opacity-50">
+        🔥 Valider ma session
+      </button>
+    </div>
+  </div>
+
+  <!-- Alpine Component -->
+  <script>
+    function pricing() {
+      return {
+        offers: [], stations: [],
+        modal: false, current: {}, stationSel: null,
+        payId: '',
+        loading: false,
+
+        get validForm() {
+          return this.stationSel !== null && /^[PM][PM]\d{6}\.\d{4}\.[A-Z0-9]{6}$/.test(this.payId);
+        },
+
+        init() {
+          fetch('/pricing').then(r => r.json()).then(d => this.offers = d);
+          fetch('/stations').then(r => r.json()).then(d => this.stations = d);
+        },
+
+        formatPrice(p) { return p.toLocaleString('fr-FR') + ' F'; },
+        selectOffer(o) { if (o.decoy) return; this.current = o; this.modal = true; },
+
+        async pay() {
+          if (!this.validForm || this.loading) return;
+          this.loading = true;
+          try {
+            const body = {
+              station_id: this.stationSel,
+              offer_id:   this.current.id,
+              txn_id:     this.payId
+            };
+            const r = await fetch('/session/draft', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
+            });
+            if (!r.ok) throw new Error(await r.text());
+            const { session_id } = await r.json();
+            // Redirection vers la page QR/succès existante
+            window.location = `/payment/${session_id}`;
+          } catch (e) {
+            console.error(e);
+            alert('Problème réseau ou paiement non reconnu.');
+          } finally {
+            this.loading = false;
+          }
+        }
+    }
+    }
+  </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tx = document.getElementById('txn_id');
+
+        tx.addEventListener('input', () => {
+            // 1. enlève tout sauf lettres/chiffres, passe en majuscule
+            let v = tx.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+
+            // 2. insère le 1er point après 8 car., le 2ᵉ après 13
+            if (v.length > 8)  v = v.slice(0, 8)  + '.' + v.slice(8);
+            if (v.length > 13) v = v.slice(0, 13) + '.' + v.slice(13);
+
+            // 3. tronque à 20 (PPxxxxxx.xx.xx -> 20 incluant deux “.”)
+            tx.value = v.slice(0, 20);
+        });
+    });
+</script>  
+</body>
+</html>

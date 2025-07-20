@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <title>PlayHub 32 – Paiement</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #ff5100;
+      --cyan: #0ff6f4;
+      --brand-dark: #1a1625;
+      --glass: rgba(22,20,34,0.96);
+    }
+    body {
+      min-height: 100vh;
+      background: url('/static/images/acceuil.png') center/cover no-repeat fixed;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    body::after {
+      content: "";
+      position: fixed; inset: 0; z-index: -1;
+      background: radial-gradient(ellipse 110% 90% at 50% 22%,rgba(20,22,40,0.98) 0%,rgba(10,12,22,0.94) 100%);
+      pointer-events: none;
+    }
+    .navbar-gamer a {
+      font-family: 'Orbitron', sans-serif;
+      background: rgba(10,10,10,0.93);
+      border-radius: 0.9em;
+      font-size: 1.18rem;
+      padding: 0.55em 1.6em;
+      color: #fff;
+      border: 2.5px solid #0ff6f4;
+      box-shadow: 0 0 10px #0ff6f4bb, 0 0 3px #ff5100aa;
+      letter-spacing: 1.5px;
+      transition: all .15s cubic-bezier(.34,1.36,.64,1);
+      margin-left: 0.4em;
+      display: flex; align-items: center; gap: 0.5em;
+      text-shadow: 0 3px 12px #000c, 0 1px 10px #0ff6f466;
+      font-weight: 900;
+    }
+    .navbar-gamer a:hover {
+      background: #0ff6f4;
+      color: #161616;
+      border-color: #ff5100;
+      box-shadow: 0 0 18px #ff5100bb, 0 0 10px #0ff6f4;
+    }
+    .gamer-modal {
+      background: linear-gradient(130deg,rgba(12,14,28,0.98) 80%,rgba(30,30,40,0.98) 100%);
+      border: 4px solid #0ff6f4;
+      border-radius: 2.7rem;
+      box-shadow: 0 0 120px #0ff6f4bb, 0 0 32px #ff5100cc;
+      animation: pulsebox 2.6s infinite alternate;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+    @keyframes pulsebox {
+      0%,100% { box-shadow: 0 0 40px #0ff6f444, 0 0 8px #ff5100aa; }
+      60% { box-shadow: 0 0 120px #0ff6f4cc, 0 0 40px #ff5100cc;}
+    }
+    .modal-glow-title {
+      color: #ff5100;
+      font-size: 2.3rem;
+      font-weight: 900;
+      letter-spacing: 2.2px;
+      text-shadow:
+        0 3px 22px #ff5100bb,
+        0 2px 8px #fff,
+        0 0 1px #0ff6f4;
+      margin-bottom: 1.1rem;
+      animation: textglow 2.2s infinite alternate;
+    }
+    @keyframes textglow {
+      0% { text-shadow: 0 0 18px #ff5100, 0 1px 12px #fff;}
+      100% { text-shadow: 0 0 42px #0ff6f4, 0 1px 24px #fff;}
+    }
+    .neon-cyan {
+      color: var(--cyan) !important;
+      text-shadow:
+        0 2px 0 #001c1c,
+        0 1px 4px #0ff6f4bb,
+        0 2px 16px #0ff6f499;
+      font-weight: 900;
+    }
+    .glass-btn {
+      background: linear-gradient(90deg,#0ff6f4 60%,#ff5100 100%);
+      border-radius: 1.6em;
+      border: none;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      box-shadow: 0 2px 16px #0ff6f4bb,0 4px 16px #ff5100bb;
+      color: #fff !important;
+      font-size: 1.18em;
+      letter-spacing: 1.3px;
+      padding: 0.7em 2em;
+      margin-top: 2em;
+      margin-bottom: 0.7em;
+      transition: background .12s, box-shadow .18s, color .17s, transform .14s;
+      font-weight: 900;
+      text-shadow: 0 3px 10px #fff, 0 2px 8px #ff5100bb, 0 1px 4px #0ff6f4cc;
+    }
+    .glass-btn:hover, .glass-btn:focus {
+      background: linear-gradient(100deg,#fff,#ff5100 70%,#0ff6f4 100%);
+      color: #191919 !important;
+      transform: scale(1.04);
+      box-shadow: 0 0 50px #ff5100, 0 2px 18px #0ff6f4;
+    }
+    .operator-chip {
+      font-size: 1.08em;
+      border-radius: 1.3em;
+      background: #181818;
+      padding: 0.22em 1em;
+      margin-left: 0.18em;
+      color: #0ff6f4 !important;
+      font-weight: 900;
+      border: 2px solid #0ff6f4;
+      text-shadow: 0 1px 8px #0ff6f4bb, 0 2px 6px #222;
+      display: inline-block;
+      letter-spacing: 2px;
+    }
+    .session-summary {
+      font-size: 1.18em;
+      margin-bottom: 0.55em;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-shadow: 0 2px 8px #000c, 0 0 8px #0ff6f499;
+      font-weight: 700;
+    }
+    .session-summary strong {
+      font-weight: 900;
+      color: var(--brand);
+      letter-spacing: 1.7px;
+      text-shadow: 0 1px 6px #ff5100cc, 0 1px 12px #fff6;
+      font-size: 1.16em;
+    }
+    .price-neon {
+      color: #0ff6f4;
+      font-size: 2.05em;
+      font-weight: 900;
+      letter-spacing: 0.09em;
+      text-shadow:
+        0 2px 6px #0ff6f4cc,
+        0 1px 1px #fff,
+        0 2px 10px #0ff6f488;
+      display: inline-block;
+      margin-left: 0.12em;
+    }
+    .pay-actions {
+      display: flex;
+      gap: 1.8em;
+      justify-content: center;
+      margin: 2.1em 0 1.4em 0;
+    }
+    .pay-btn, .pay-btn-green, .pay-btn-orange {
+      border-radius: 1.3em;
+      font-size: 1.22em;
+      font-family: 'Orbitron', sans-serif;
+      padding: 0.78em 1.75em;
+      font-weight: 900;
+      box-shadow: 0 0 22px #000c, 0 0 10px #ff510066;
+      border: none;
+      transition: all .12s;
+      color: #fff !important;
+      letter-spacing: 1.3px;
+      text-shadow: 0 2px 10px #fff, 0 0 8px #ff5100bb, 0 1px 4px #0ff6f4cc;
+    }
+    .pay-btn-green {
+      background: linear-gradient(90deg,#05f551 70%,#0ff6f4 120%);
+      box-shadow: 0 0 16px #0ff6f4cc, 0 0 8px #05f55199;
+    }
+    .pay-btn-green:hover {
+      background: #fff;
+      color: #0da159 !important;
+      transform: scale(1.07);
+      box-shadow: 0 0 40px #0ff6f4cc,0 0 12px #0da15999;
+    }
+    .pay-btn-orange {
+      background: linear-gradient(90deg,#ff5100 60%,#ffe66c 130%);
+      color: #1a1625 !important;
+      box-shadow: 0 0 14px #ff5100, 0 0 5px #ffe66c;
+    }
+    .pay-btn-orange:hover {
+      background: #fff;
+      color: #ff5100 !important;
+      transform: scale(1.07);
+      box-shadow: 0 0 36px #ff5100bb,0 0 12px #ffe66c;
+    }
+    .info-qr {
+      color: #0ff6f4cc;
+      font-size: 1.12em;
+      margin-top: 1.7em;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 6px #000a, 0 1px 8px #0ff6f4bb;
+      border-top: 1.5px solid #23272f;
+      padding-top: 1.1em;
+    }
+    @media (max-width: 650px) {
+      .gamer-modal { padding: 1.3em 0.5em !important; }
+      .pay-actions { flex-direction: column; gap: 1em;}
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col items-center justify-center px-9" x-data="paymentFlow()" x-init="init()">
+  <!-- Navbar -->
+  <nav class="fixed top-7 right-10 flex gap-4 z-50 navbar-gamer">
+    <a href="/">🏠 Accueil</a>
+    <a href="/games">🎮 Jeux</a>
+    <a href="/extend">⏱️ Prolonger</a>
+  </nav>
+
+  <!-- MODALS -->
+  <template x-if="expired">
+    <div x-show="expired" x-transition.opacity class="fixed inset-0 bg-black/80 flex items-center justify-center z-50" @click.self="goHome()">
+      <div class="gamer-modal p-9 text-center max-w-sm border-[3.5px] border-red-500 shadow-xl">
+        <h2 class="text-3xl font-extrabold text-red-500 mb-5 flex items-center justify-center gap-2 modal-glow-title">
+          <span>⏰</span>
+          Temps écoulé !
+        </h2>
+        <p class="mb-7 text-neutral-300 neon-cyan">
+          Votre session a expiré.<br>
+          La station est de nouveau <span class="text-green-400 font-semibold">disponible</span>.
+        </p>
+        <button @click="goHome()" class="glass-btn neon-main w-full">Revenir à l’accueil</button>
+      </div>
+    </div>
+  </template>
+  <template x-if="confirmed">
+    <div x-show="confirmed" x-transition.opacity class="fixed inset-0 bg-black/75 flex items-center justify-center z-50" @click.self="goHome()">
+      <div class="gamer-modal p-9 text-center max-w-sm border-[3.5px] border-green-400 shadow-xl">
+        <h2 class="text-3xl font-extrabold text-green-400 mb-5 flex items-center justify-center gap-2 modal-glow-title">
+          <span>✅</span>
+          Paiement validé !
+        </h2>
+        <p class="mb-7 neon-cyan">
+          Bravo, votre session est confirmée.<br>
+          Bonne partie ! 🎮
+        </p>
+        <button @click="goHome()" class="glass-btn neon-main w-full">Retour à l’accueil</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Main content -->
+  <div class="gamer-modal p-12 text-center max-w-lg w-full mx-auto">
+    <h1 class="modal-glow-title tracking-widest">Votre session est prête</h1>
+    <div class="session-summary">
+      <div class="mb-1">
+        Poste sélectionné : <strong>{{ session.station.name }}</strong>
+      </div>
+      <div class="mb-3">
+        Montant à payer : <span class="price-neon">{{ session.offer.price }} F</span>
+      </div>
+      <div>
+        Opérateur :
+        <span class="operator-chip neon-cyan">{{ session.operator | upper }}</span>
+      </div>
+    </div>
+    <div class="pay-actions">
+      <button @click="confirm()" :disabled="confirmed || expired" class="pay-btn pay-btn-green">
+        ✔️ Valider le paiement
+      </button>
+      <a href="{{ pay_url }}" target="_blank" class="pay-btn pay-btn-orange">
+        💸 Payer maintenant
+      </a>
+    </div>
+    <div class="info-qr">
+      Scannez le QR code dans l’app du mobile money<br>ou cliquez sur “Valider le paiement” pour tester.
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('paymentFlow', () => ({
+        expired: false,
+        confirmed: false,
+        sessionRef: '{{ session.ref_code }}',
+        init() {
+          setTimeout(() => this.expired = true, 120_000);
+        },
+        goHome() {
+          window.location.href = '/';
+        },
+        async confirm() {
+          try {
+            const res = await fetch(`/session/confirm/${this.sessionRef}`, { method: 'POST' });
+            if (res.ok) {
+              this.confirmed = true;
+            } else {
+              console.error('Echec confirmation');
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }));
+    });
+  </script>
+</body>
+</html>

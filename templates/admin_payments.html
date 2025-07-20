@@ -1,0 +1,131 @@
+{% extends "admin_base.html" %}
+{% block title %}Consulter les paiements - PlayHub32{% endblock %}
+
+{% block main_content %}
+    <style>
+        .payments-table {
+            width: 100%;
+            background: linear-gradient(120deg,rgba(19,19,34,0.92) 85%,rgba(30,21,48,0.94) 100%);
+            border-radius: 22px;
+            box-shadow: 0 0 44px #13ffe260, 0 0 0 #fff;
+            margin: 38px auto 0 auto;
+            overflow-x: auto;
+            border: 2.5px solid #232642cc;
+            backdrop-filter: blur(2px);
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.45em;
+        }
+        th, td {
+            padding: 13px 9px;
+            text-align: center;
+            font-size: 1.09em;
+            border-radius: 12px;
+        }
+        th {
+            background: linear-gradient(90deg,#131527 80%,#232642 100%);
+            color: #13ffe2;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 1.13em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px #13ffe275, 0 0 3px #12111b;
+            border-bottom: 2px solid #13ffe295;
+        }
+        td {
+            background: rgba(29,32,64,0.87);
+            color: #fff;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .idcell { font-family: monospace; color:#ffb133; letter-spacing:1.5px;}
+        .operator-badge {
+            display: inline-block;
+            padding: 7px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.04em;
+            box-shadow: 0 0 7px #0009;
+            letter-spacing: 1px;
+        }
+        .operator-Orange {
+            background: linear-gradient(90deg,#ffb133 65%,#fff4b2 100%);
+            color: #492a00; border:1.7px solid #ffb133;
+        }
+        .operator-MTN {
+            background: linear-gradient(90deg,#ffe55a 60%,#fffbda 100%);
+            color: #31311c; border:1.7px solid #ffd700;
+        }
+        .used-badge {
+            background: linear-gradient(90deg,#13ffe2 80%,#2fffd5 100%);
+            color: #191d18; font-weight: bold; border-radius:8px;
+            box-shadow:0 0 9px #13ffe260;
+            padding: 5px 20px;
+        }
+        .notused-badge {
+            background: linear-gradient(90deg,#ff3c73 70%,#ffb133 100%);
+            color: #fff; font-weight: bold; border-radius:8px;
+            box-shadow:0 0 7px #ff3c73aa;
+            padding: 5px 20px;
+            text-shadow: 0 0 6px #ff3c7394;
+        }
+        /* Zebra striping */
+        tr:nth-child(even) td { background:rgba(34,34,56,0.93);}
+        tr:hover td { background: #1e1939e0 !important; color: #13ffe2;}
+    </style>
+
+    <h1 style="color:#13ffe2;text-shadow:0 0 26px #13ffe2bb,0 0 8px #ff3c73cc;text-align:center;margin-bottom:22px;font-family:'Orbitron',Arial,sans-serif;letter-spacing:1.7px;">
+        <span style="font-size:1.15em;">📥</span> Paiements validés
+    </h1>
+
+    <div class="payments-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Heure</th>
+                    <th>ID</th>
+                    <th>Opérateur</th>
+                    <th>Montant</th>
+                    <th>Nom client</th>
+                    <th>Téléphone</th>
+                    <th>Validé par</th>
+                    <th>Utilisé ?</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in payments %}
+                <tr>
+                    <td>
+                        {% if p.validated_at %}
+                            {{ p.validated_at.strftime('%d/%m/%y %H:%M') }}
+                        {% else %}
+                            –
+                        {% endif %}
+                    </td>
+                    <td class="idcell">{{ p.txn_id }}</td>
+                    <td>
+                        <span class="operator-badge operator-{{ p.operator|replace(' ', '') }}">
+                            {{ p.operator }}
+                        </span>
+                    </td>
+                    <td>{{ p.amount }} F</td>
+                    <td>{{ p.client_name }}</td>
+                    <td>{{ p.client_phone }}</td>
+                    <td>{{ p.validated_by }}</td>
+                    <td>
+                        {% if p.is_used %}
+                            <span class="used-badge">Oui</span>
+                        {% else %}
+                            <span class="notused-badge">Non</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" style="color:#888;">Aucun paiement enregistré</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="utf-8"/>
+  <title>Relancer / Sauver ma session</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Orbitron pour effet gamer -->
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #ff5100; }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: -1;
+      background: url('/static/images/acceuil.png') center/cover no-repeat;
+      filter: brightness(.22) contrast(.75);
+    }
+    .gamer-title {
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 8px #ff5100, 0 0 20px #000;
+      letter-spacing: 2px;
+    }
+    .gamer-block {
+      border: 2.5px solid;
+      border-image: linear-gradient(90deg, #ff5100, #ffcf00, #06f6f5, #ff5100) 1;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 32px #ff5100a0;
+      background: linear-gradient(120deg, rgba(22,22,22,0.96) 60%, rgba(0,0,0,0.87) 100%);
+      backdrop-filter: blur(9px);
+    }
+    .btn-gamer {
+      transition: box-shadow 0.2s, filter 0.2s, background 0.2s;
+    }
+    .btn-gamer:focus, .btn-gamer:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 0 14px 4px #ff5100aa, 0 0 4px #fff;
+    }
+    .btn-relance:focus, .btn-relance:hover {
+      box-shadow: 0 0 20px 6px #0fa, 0 0 4px #fff;
+    }
+    .btn-save:focus, .btn-save:hover {
+      box-shadow: 0 0 18px 6px #ffd600, 0 0 4px #fff;
+    }
+  .gamer-navbar {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.gamer-navbar .nav-link {
+  position: relative;
+  padding: 10px 22px;
+  font-size: 1.17rem;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 0.85em;
+  letter-spacing: 2px;
+  background: linear-gradient(92deg, #191919 80%, #262626 100%);
+  box-shadow: 0 0 12px #ff510099, 0 0 2px #fff1;
+  border: 2.3px solid transparent;
+  text-shadow:
+    0 0 9px #ff5100cc,
+    0 0 18px #ffd700aa,
+    0 0 2px #fff;
+  transition:
+    background 0.16s,
+    box-shadow 0.16s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.16s;
+}
+
+.gamer-navbar .nav-link:hover,
+.gamer-navbar .nav-link:focus {
+  background: linear-gradient(92deg, #ff5100 5%, #ffcf00 60%, #06f6f5 95%);
+  color: #151515;
+  box-shadow:
+    0 0 28px 8px #ff5100cc,
+    0 0 12px #ffcf0099,
+    0 0 1px #fff;
+  border-color: #ffcf00;
+  transform: scale(1.07) rotate(-1deg);
+  text-shadow:
+    0 0 12px #fff5,
+    0 0 7px #ff5100a0;
+}
+
+  /* Responsive: barre en bas et centrée sur mobile */
+  @media (max-width: 640px) {
+    .gamer-navbar {
+      flex-direction: row;
+      gap: 3vw;
+      justify-content: center;
+      top: unset !important;
+      bottom: 14px;
+      left: 50%;
+      right: unset;
+      transform: translateX(-50%);
+      background: rgba(28,28,28,0.87);
+      padding: 7px 12px 5px 12px;
+      border-radius: 1.2em;
+      box-shadow: 0 8px 24px #000a;
+    }
+    .gamer-navbar .nav-link {
+      font-size: 1.03rem;
+      padding: 8px 13px;
+      margin: 0;
+    }
+  }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center text-white px-4">
+  <!-- Navbar gamer -->
+  <nav class="fixed top-6 right-8 md:top-6 md:right-8 z-50 flex gap-4 md:gap-5 gamer-navbar"
+      style="backdrop-filter: blur(7px);">
+    <a href="/"
+      class="nav-link"
+      >🏠 Accueil</a>
+    <a href="/games"
+      class="nav-link"
+      >🎮 Jeux</a>
+    <a href="/extend"
+      class="nav-link"
+      >⏱️ Prolonger</a>
+    <a href="/session/manage"
+      class="nav-link"
+      >🔄 Relancer</a>
+  </nav>
+
+
+
+  <div class="w-full max-w-xl mx-auto gamer-block p-12 rounded-3xl shadow-2xl">
+    <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center gamer-title tracking-wide">
+      <span class="block">🎮 Relancer</span>
+      <span class="block">/ Sauver ma session</span>
+    </h1>
+
+    <form id="actionsForm" class="space-y-7" autocomplete="off">
+      <input
+        type="text"
+        id="ref_code"
+        name="ref_code"
+        maxlength="8"
+        minlength="8"
+        class="w-full px-6 py-4 rounded-lg border-2 border-[#ff5100] bg-[#1b1b1b] text-white text-xl tracking-widest font-bold focus:outline-none focus:border-yellow-400 shadow-md"
+        placeholder="🎟️ Entrez votre code ticket"
+        required
+      />
+
+      <div class="flex gap-8 pt-1">
+        <button
+          type="submit"
+          formaction="/session/resume"
+          formmethod="post"
+          class="w-1/2 py-3 rounded-xl bg-green-600 btn-gamer btn-relance text-white text-lg font-bold tracking-wide hover:bg-green-500"
+        >⚡ Relance</button>
+        <button
+          type="submit"
+          formaction="/session/save"
+          formmethod="post"
+          class="w-1/2 py-3 rounded-xl bg-yellow-500 btn-gamer btn-save text-black text-lg font-bold tracking-wide hover:bg-yellow-400"
+        >💾 Sauvegarde</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

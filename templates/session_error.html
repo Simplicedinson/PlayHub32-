@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <title>PlayHub 32 – Erreur</title>
+
+  <!-- Dépendances -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --brand:#ff5100;
+      --cyan:#0ff6f4;
+    }
+    body {
+      @apply min-h-screen flex items-center justify-center bg-fixed bg-cover text-white text-center overflow-hidden;
+      background-image:url('/static/images/acceuil.png');
+      font-family:'Orbitron',sans-serif;
+    }
+    body::after {
+      content:'';@apply fixed inset-0 -z-10;
+      background:radial-gradient(ellipse 115% 95% at 50% 20%,rgba(20,22,40,0.96) 0%,rgba(10,12,22,0.92) 100%);
+    }
+    .error-card {
+      @apply p-10 max-w-md w-full rounded-3xl border-4;
+      background:rgba(12,14,28,0.96);
+      border-color:var(--cyan);
+      box-shadow:0 0 50px var(--cyan),0 0 24px var(--brand);
+    }
+    .title {
+      color:var(--brand);
+      @apply text-3xl font-extrabold mb-6 tracking-widest;
+      text-shadow:0 0 24px var(--brand),0 2px 8px #fff;
+    }
+    .code {
+      @apply text-5xl font-black mb-4;
+      color:var(--cyan);
+      text-shadow:0 0 24px var(--cyan),0 2px 6px #fff;
+    }
+    .message {
+      @apply mb-6 text-lg;
+      color:#e0e0e0;
+      text-shadow:0 1px 6px #000;
+    }
+    .btn {
+      @apply inline-block mt-4 px-8 py-3 rounded-xl font-extrabold tracking-wide transition;
+      background:linear-gradient(90deg,var(--brand) 0%,var(--cyan) 100%);
+      text-shadow:0 2px 8px #000,0 0 8px var(--brand);
+    }
+    .btn:hover { transform:scale(1.05);filter:brightness(1.2) }
+  </style>
+</head>
+<body>
+  <div class="error-card">
+    <div class="code">{{ status_code }}</div>
+    <h1 class="title">Oops !</h1>
+    <p class="message">{{ detail }}</p>
+    <a href="/" class="btn">🏠 Retour à l’accueil</a>
+  </div>
+</body>
+</html>

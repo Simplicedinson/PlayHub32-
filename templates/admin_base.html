@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PlayHub32 — Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; padding: 0;}
+        body {
+            min-height: 100vh;
+            background: #111019;
+            font-family: 'Orbitron', 'Roboto', Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(140deg, #18152b 80%, #22124d 100%);
+            border-right: 2.5px solid #13ffe2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-shadow: 0 0 40px #1fd1f969;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+        }
+        .sidebar h2 {
+            color: #13ffe2;
+            text-shadow: 0 0 24px #13ffe2bb, 0 0 7px #ff3c73cc;
+            font-size: 1.29em;
+            margin: 32px 0 36px 28px;
+            letter-spacing: 2.7px;
+            font-family: 'Orbitron', 'Roboto', Arial, sans-serif;
+        }
+        .sidebar .menu-link {
+            display: flex;
+            align-items: center;
+            width: 90%;
+            margin: 8px auto;
+            padding: 13px 16px 13px 22px;
+            color: #e0feff;
+            font-size: 1.13em;
+            font-weight: bold;
+            letter-spacing: 1.2px;
+            border-left: 5px solid transparent;
+            border-radius: 0 20px 20px 0;
+            text-decoration: none;
+            transition: all 0.18s cubic-bezier(.5,.25,.6,1.15);
+            box-shadow: 0 0 10px #13ffe211;
+        }
+        .sidebar .menu-link.active,
+        .sidebar .menu-link:hover {
+            color: #ff3c73;
+            background: linear-gradient(90deg, #111019 50%, #262f61 100%);
+            border-left: 5px solid #13ffe2;
+            box-shadow: 0 0 20px #13ffe2b7;
+            text-shadow: 0 0 4px #13ffe2;
+        }
+        .sidebar .menu-link .icon {
+            margin-right: 15px;
+            filter: drop-shadow(0 0 5px #13ffe2);
+            width: 22px; height: 22px;
+        }
+        .sidebar .logout-link {
+            margin-top: auto;
+            margin-bottom: 32px;
+            margin-left: 24px;
+            background: linear-gradient(90deg, #ff3844 10%, #ff9f29 90%);
+            color: #fffbe3 !important;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.12em;
+            padding: 13px 24px;
+            font-family: 'Orbitron', Arial, sans-serif;
+            text-decoration: none;
+            box-shadow: 0 0 18px #ff384499;
+            text-align: center;
+            transition: background 0.14s, color 0.13s;
+        }
+        .sidebar .logout-link:hover {
+            background: linear-gradient(90deg, #ff9f29 20%, #ff3844 90%);
+            color: #fffd6b !important;
+        }
+        .main-panel {
+            margin-left: 240px;
+            padding: 52px 6vw 44px 6vw;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            background:
+                linear-gradient(120deg, rgba(16,13,32,0.75) 90%, rgba(27,11,47,0.60) 100%),
+                url('/static/images/acceuil.png') center/cover no-repeat;
+            box-shadow: 0 0 80px #12111bcc inset;
+        }
+
+        .main-panel h1, .main-panel h2 {
+            color: #13ffe2;
+            text-shadow: 0 0 16px #13ffe2b8, 0 0 4px #ff3c73bb;
+            font-family: 'Orbitron', Arial, sans-serif;
+        }
+        @media (max-width: 900px) {
+            .sidebar { width: 60vw; min-width: 110px;}
+            .main-panel { margin-left: 60vw; }
+        }
+        @media (max-width: 600px) {
+            .sidebar { display: none;}
+            .main-panel { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+   <nav class="sidebar">
+    <a href="/admin/valider-paiement" class="menu-link {% if active_page=='valider' %}active{% endif %}">
+        <span class="icon">💸</span> Valider un paiement
+    </a>
+    <a href="/admin/sessions" class="menu-link {% if active_page=='sessions' %}active{% endif %}">
+        <span class="icon">🎮</span> Sessions en cours
+    </a>
+    <a href="/admin/machines" class="menu-link {% if active_page=='machines' %}active{% endif %}">
+        <span class="icon">🖥️</span> État des machines
+    </a>
+    <a href="/admin/payments" class="menu-link {% if active_page=='payments' %}active{% endif %}">
+        <span class="icon">📥</span> Consulter les paiements
+    </a>
+    <a href="/admin/historique" class="menu-link {% if active_page=='historique' %}active{% endif %}">
+        <span class="icon">📊</span> Historique
+    </a>
+    <a href="/admin/logout" class="logout-link">Déconnexion</a>
+     </nav>
+    <div class="main-panel">
+        {% block main_content %}
+        <!-- Le contenu de la tâche sélectionnée arrive ici -->
+        {% endblock %}
+    </div>
+</body>
+</html>

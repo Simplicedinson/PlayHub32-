@@ -1,0 +1,114 @@
+{% extends "admin_base.html" %}
+{% block title %}Confirmation Paiement - PlayHub32{% endblock %}
+
+{% block main_content %}
+    <style>
+        .confirm-box {
+            background: linear-gradient(120deg, #1c1b2b 80%, #271c3f 120%);
+            max-width: 540px;
+            margin: 32px auto 0 auto;
+            padding: 38px 32px 32px 32px;
+            border-radius: 20px;
+            box-shadow: 0 0 44px #1fd1f99c, 0 0 0 #fff;
+            border: 2.5px solid #13ffe2cc;
+            position: relative;
+        }
+        .confirm-box h2 {
+            color: #ff9f29;
+            text-shadow: 0 0 14px #ff9f29b7, 0 0 7px #1fd1f9a9;
+            font-family: 'Orbitron', Arial, sans-serif;
+            text-align: center;
+            margin-bottom: 28px;
+            font-size: 1.4em;
+        }
+        .info { margin-bottom: 20px; }
+        .info label {
+            font-weight: bold;
+            color: #13ffe2;
+            letter-spacing: 1px;
+            font-family: 'Roboto', Arial, sans-serif;
+            text-shadow: 0 0 6px #1fd1f999, 0 0 1px #fff;
+        }
+        .info span {
+            background: #24213b;
+            padding: 9px 15px;
+            display: block;
+            border-radius: 9px;
+            margin-top: 5px;
+            color: #fff;
+            font-size: 1.11em;
+            font-family: 'Roboto Mono', monospace;
+            box-shadow: 0 0 8px #1fd1f93a inset;
+        }
+        form { display: flex; flex-direction: column; gap: 17px; margin-top: 24px; }
+        button {
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Orbitron', Arial, sans-serif;
+            letter-spacing: 1.1px;
+            transition: background 0.15s, color 0.13s;
+            box-shadow: 0 0 14px #13ffe288, 0 0 2px #fff;
+        }
+        .confirm {
+            background: linear-gradient(90deg, #ff9f29, #13ffe2 90%);
+            color: #171123;
+            box-shadow: 0 0 16px #ff9f2999, 0 0 9px #13ffe258 inset;
+        }
+        .confirm:hover {
+            background: linear-gradient(90deg, #13ffe2 10%, #ff3c73 100%);
+            color: #fff;
+        }
+        .back {
+            background: #262a3c;
+            color: #fff;
+            border: 2px solid #13ffe2;
+            box-shadow: 0 0 9px #13ffe244 inset;
+        }
+        .back:hover {
+            background: #ff3c73;
+            color: #fff;
+            border: 2px solid #ff3c73;
+        }
+        .error {
+            background: #e74c3c;
+            padding: 14px;
+            border-radius: 9px;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 16px;
+            box-shadow: 0 0 16px #e74c3ccc;
+        }
+    </style>
+
+    <div class="confirm-box">
+        <h2>🎯 Vérifier les informations</h2>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <div class="info"><label>ID de transaction</label><span>{{ txn_id }}</span></div>
+        <div class="info"><label>Opérateur</label><span>{{ operator }}</span></div>
+        <div class="info"><label>Montant</label><span>{{ amount }} F CFA</span></div>
+        <div class="info"><label>Nom du client</label><span>{{ client_name }}</span></div>
+        <div class="info"><label>Téléphone</label><span>{{ client_phone }}</span></div>
+
+        <form method="post" action="/admin/valider-paiement/confirm">
+            <input type="hidden" name="txn_id" value="{{ txn_id }}">
+            <input type="hidden" name="operator" value="{{ operator }}">
+            <input type="hidden" name="amount" value="{{ amount }}">
+            <input type="hidden" name="client_name" value="{{ client_name }}">
+            <input type="hidden" name="client_phone" value="{{ client_phone }}">
+            <button type="submit" class="confirm">✅ Confirmer et valider</button>
+        </form>
+
+        <form method="get" action="/admin/valider-paiement">
+            <button type="submit" class="back">✏️ Revenir au formulaire</button>
+        </form>
+    </div>
+{% endblock %}

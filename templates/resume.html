@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Session relancée !</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; }
+        body {
+            min-height: 100vh;
+            font-family: 'Orbitron', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #101124; /* fallback */
+            position: relative;
+            overflow: hidden;
+        }
+        /* L'IMAGE EN ARRIÈRE-PLAN AVEC FLUO ET FILTRE ! */
+        body::before {
+            content: "";
+            position: fixed;
+            left: 0; top: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background: url('/static/images/acceuil.png') center center / cover no-repeat;
+            filter: brightness(0.26) blur(9px) contrast(.8);
+        }
+        .resume-box {
+            max-width: 420px;
+            background: linear-gradient(135deg, #181f40f8 60%, #1fd1f9e6 100%);
+            border-radius: 20px;
+            box-shadow: 0 0 35px 8px #00fff7a0, 0 8px 40px 0 #141837cc;
+            padding: 38px 32px;
+            text-align: center;
+            border: 3px solid #1fd1f9;
+            position: relative;
+            animation: pulsebox 2s infinite alternate;
+            z-index: 1;
+        }
+        @keyframes pulsebox {
+            from { box-shadow: 0 0 32px 5px #00fff7a0, 0 8px 40px #141837cc; }
+            to   { box-shadow: 0 0 52px 18px #1fd1f9, 0 8px 40px #141837cc; }
+        }
+        .resume-box h2 {
+            color: #fff;
+            text-shadow: 0 0 12px #00fff7a, 0 0 2px #0ff;
+            font-size: 2rem;
+            margin-bottom: 26px;
+            letter-spacing: 2px;
+        }
+        .info {
+            background: rgba(30,60,90,0.8);
+            border-radius: 12px;
+            margin: 24px 0 18px 0;
+            padding: 16px;
+            color: #fff;
+            font-size: 1.15rem;
+            box-shadow: 0 2px 18px 0 #00fff77c;
+        }
+        .ref, .station, .minutes {
+            display: inline-block;
+            margin-left: 5px;
+            font-family: inherit;
+        }
+        .ref {
+            color: #fffb00;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 0 0 7px #fffd4d;
+        }
+        .station {
+            color: #1fd1f9;
+            font-size: 1.25em;
+            font-weight: 800;
+            text-shadow: 0 0 6px #1fd1f9b2;
+        }
+        .minutes {
+            color: #00ffae;
+            font-size: 1.4em;
+            text-shadow: 0 0 8px #00ffae80;
+            font-weight: bold;
+        }
+        .resume-box a {
+            display: inline-block;
+            margin-top: 26px;
+            padding: 10px 32px;
+            background: linear-gradient(90deg, #ff38d2, #1fd1f9 90%);
+            border-radius: 7px;
+            color: #fff;
+            font-family: inherit;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 1.1em;
+            box-shadow: 0 0 12px #1fd1f9a0;
+            text-decoration: none;
+            transition: background 0.23s, box-shadow 0.22s, color 0.19s;
+        }
+        .resume-box a:hover {
+            background: linear-gradient(90deg, #1fd1f9, #ff38d2 90%);
+            color: #fffb00;
+            box-shadow: 0 0 30px #ff38d2a0;
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-box">
+        <h2>🎮 Session relancée !</h2>
+        <div class="info">
+            <div>Référence : <span class="ref">{{ ref_code }}</span></div>
+            <div>Station attribuée : <span class="station">{{ station_id }}</span></div>
+            <div>Temps restant : <span class="minutes">{{ minutes_left }} min</span></div>
+        </div>
+        <a href="/">Retour à l'accueil</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>PlayHub 32 – Vérification de session</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>
+    :root { --brand: #ff5100; --cyan:  #0ff6f4; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: 'Orbitron', Arial, sans-serif;
+      color: #fff;
+      background: url('/static/images/acceuil.png') center/cover fixed no-repeat, #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      background: radial-gradient(ellipse 120% 90% at 50% 10%,rgba(15,15,30,.94) 0%,rgba(10,5,20,0.96) 100%);
+      pointer-events: none;
+      filter: blur(2px) brightness(0.9);
+    }
+    .review-card {
+      position: relative;
+      z-index: 1;
+      background: rgba(13,15,36,0.97);
+      border-radius: 2rem;
+      border: 3.5px solid var(--cyan);
+      box-shadow: 0 0 28px 0 var(--cyan), 0 0 18px 0 var(--brand), 0 10px 64px 0 #0ff2;
+      max-width: 540px;
+      width: 99vw;
+      margin: 48px 0;
+      padding: 44px 36px 34px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      animation: upIn 1s cubic-bezier(.43,.02,.57,.97);
+    }
+    @keyframes upIn { 0% { opacity: 0; transform: scale(.97) translateY(60px);} 100%{opacity:1;transform:scale(1) translateY(0);} }
+    .review-title { color: var(--brand); text-shadow: 0 1px 6px #000, 0 0 14px var(--brand); letter-spacing: 2.2px; font-size: 2.15em; font-weight: 900; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; filter: brightness(1.14);}
+    .row { width: 100%; display: flex; justify-content: space-between; align-items: baseline; font-size: 1.18em; margin-bottom: 17px; text-shadow: 0 0 7px #0ff7,0 1px 1px #000b; letter-spacing: 1px;}
+    .row .label { color: #e7e8eb; font-weight: 600; opacity: 0.77; letter-spacing: 1.2px; text-shadow: 0 1px 4px #0ff2;}
+    .row .value { color: var(--cyan); font-weight: 900; text-shadow: 0 0 8px var(--cyan), 0 1px 2px #000c; letter-spacing: 2px; font-size: 1.09em; white-space: normal; text-align: right; max-width: 60%;}
+    .row .value-big { color: var(--brand); font-size: 1.29em; text-shadow: 0 0 12px var(--brand), 0 1px 2px #000b;}
+    .row .payment-id { font-size: 1.11em; color: #0ff6f4; word-break: break-all; white-space: normal; max-width: 90%; text-align: right; }
+    .btn-confirm { margin-top: 28px; padding: 15px 60px; background: linear-gradient(90deg, var(--brand) 0%, var(--cyan) 90%); color: #fff; border: none; border-radius: 1.2rem; font-size: 1.18em; font-family: inherit; font-weight: 900; letter-spacing: 2.5px; text-shadow: 0 1px 6px #000, 0 0 10px var(--brand); box-shadow: 0 6px 26px var(--brand), 0 0 18px var(--cyan); cursor: pointer; transition: background 0.16s, box-shadow 0.16s, filter 0.19s; filter: brightness(1.08); min-width: 70%;}
+    .btn-confirm:hover { background: linear-gradient(90deg, var(--cyan) 5%, var(--brand) 80%); color: #fffbe3; box-shadow: 0 0 46px var(--cyan), 0 0 36px var(--brand); filter: brightness(1.24); transform: scale(1.04);}
+    .btn-confirm[disabled] { opacity: 0.45; filter: grayscale(1); cursor: not-allowed;}
+    @media (max-width: 600px) { .review-card { max-width: 98vw; padding: 17px 1vw;} .review-title {font-size: 1.25em;} .btn-confirm {padding: 12px 0;} .row {font-size: 1em;} .row .payment-id { font-size: 0.91em; } }
+  </style>
+</head>
+<body x-data="sessionReview()" x-init="init()">
+
+  <!-- Modal de succès -->
+  <template x-if="confirmed">
+    <div x-show="confirmed" x-transition.opacity class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div class="review-card border-green-500" style="max-width:420px; box-shadow: 0 0 42px #00ffa0;">
+        <h2 style="color:#0f0;font-size:2em;letter-spacing:2px;text-shadow:0 0 15px #0f0;">✅ Paiement validé !</h2>
+        <p class="neon-cyan" style="color:#0ff;text-shadow:0 0 10px #0ff;">Bravo, votre session est confirmée.<br>Bonne partie ! 🎮</p>
+        <button onclick="window.location.href='/'" class="btn-confirm" style="background:linear-gradient(90deg,#00ffbb,#0ff6f4);margin-top:22px;">Retour à l'accueil</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Review card & validation timer -->
+  <template x-if="!confirmed">
+    <div class="review-card">
+      <h1 class="review-title">Vérifiez votre session</h1>
+      <div class="row">
+        <span class="label">Durée&nbsp;:</span>
+        <span class="value">{{ offer.label }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Poste&nbsp;:</span>
+        <span class="value">{{ station.name }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Montant&nbsp;:</span>
+        <span class="value value-big">{{ offer.price }} F</span>
+      </div>
+      <div class="row">
+        <span class="label">Payment&nbsp;ID&nbsp;:</span>
+        <span class="value payment-id">{{ payment.txn_id }}</span>
+      </div>
+
+      <!-- Timer + Expiré -->
+      <div id="session-expired-msg" x-show="expired" style="color: #ff5100; font-weight:bold; font-size:1.3em; margin-bottom:12px;">
+        ⏰ Temps écoulé.<br>
+        <a href="/" style="color:#06f6f5;">Cliquez ici pour recommencer une session</a>
+      </div>
+      <div style="margin-bottom: 14px;" x-show="!expired">
+        Temps restant pour valider : <span x-text="timerStr">2:00</span>
+      </div>
+      <button 
+        class="btn-confirm"
+        @click="validerSession"
+        :disabled="expired"
+        x-show="!expired"
+      >🔥 Valider ma session</button>
+    </div>
+  </template>
+
+  <script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('sessionReview', () => ({
+      confirmed: false,
+      expired: false,
+      secondsLeft: 120,
+      timerStr: '2:00',
+      timerInterval: null,
+
+      init() {
+        this.timerStr = this.formatTimer(this.secondsLeft);
+        this.timerInterval = setInterval(() => {
+          this.secondsLeft--;
+          this.timerStr = this.formatTimer(this.secondsLeft);
+          if (this.secondsLeft <= 0) {
+            this.expired = true;
+            clearInterval(this.timerInterval);
+            this.timerStr = "0:00";
+          }
+        }, 1000);
+      },
+      formatTimer(s) {
+        return `${Math.floor(s / 60)}:${('0'+(s%60)).slice(-2)}`;
+      },
+      validerSession() {
+        if (this.expired) return; // blocage côté JS
+        fetch(`/session/confirm/{{ session.ref_code }}`, {method:'POST'})
+          .then(r=>{
+            if(r.ok) this.confirmed=true;
+            else alert('Validation échouée');
+          });
+      }
+    }))
+  })
+  </script>
+</body>
+</html>

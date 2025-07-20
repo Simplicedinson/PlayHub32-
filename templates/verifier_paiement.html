@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Vérifier un paiement • PlayHub32</title>
+
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        html,body{margin:0;height:100%;min-height:100vh;font-family:'Orbitron','Roboto',Arial,sans-serif;background:#111019;
+                  display:flex;justify-content:center;align-items:flex-start;padding-top:7vh;}
+        /* Fond flou + image */
+        body::before{
+            content:"";position:fixed;top:0;left:0;right:0;bottom:0;
+            background:url('/static/images/acceuil.png') center/cover no-repeat;
+            filter:brightness(.65) blur(3px);z-index:-2;}
+        body::after{
+            content:"";position:fixed;top:0;left:0;right:0;bottom:0;
+            background:linear-gradient(120deg,rgba(16,13,32,.8) 75%,rgba(27,11,47,.8) 100%);
+            z-index:-1;}
+
+        /* Carte/boîte principale */
+        .verify-card{
+            background:linear-gradient(120deg,#1a192c 80%,#271c3f 110%);
+            border:2.5px solid #13ffe2cc;border-radius:24px;box-shadow:0 0 48px #13ffe240;
+            padding:48px 38px;max-width:540px;width:90vw;color:#fff;text-align:center;}
+
+        h1{color:#ff9f29;text-shadow:0 0 16px #ff9f2988,0 0 6px #13ffe256;font-size:1.9em;margin-bottom:32px;}
+
+        /* Champ + bouton */
+        .verify-form input{
+            width:100%;padding:14px 16px;margin-bottom:20px;
+            border-radius:10px;border:2px solid #13ffe2;background:#232642;color:#fff;
+            font-size:1.08em;font-family:'Roboto Mono',monospace;letter-spacing:1px;
+            box-shadow:0 0 12px #13ffe230 inset;}
+        .verify-form button{
+            width:100%;padding:14px;background:linear-gradient(90deg,#13ffe2,#ff3c73 90%);
+            color:#18142b;font-weight:bold;border:none;border-radius:12px;font-size:1.15em;
+            cursor:pointer;box-shadow:0 0 20px #13ffe280;transition:background .15s;}
+        .verify-form button:hover{
+            background:linear-gradient(90deg,#ff3c73 10%,#13ffe2 100%);color:#fff;}
+
+        /* Résultat */
+        .result-box{
+            margin-top:32px;padding:26px 24px;border-radius:18px;
+            background:rgba(29,32,64,.92);box-shadow:0 0 28px #13ffe230 inset;}
+        .result-box h2{color:#13ffe2;margin-bottom:22px;text-shadow:0 0 12px #13ffe290;}
+        .info-line{display:flex;justify-content:space-between;align-items:center;
+                   background:#181b34;margin:8px 0;padding:10px 16px;border-radius:10px;
+                   font-family:'Roboto Mono',monospace;font-size:1.05em;}
+        .info-label{color:#ff9f29;font-weight:600;letter-spacing:1px;}
+        .error-msg{background:#ff3c73d0;color:#fff;padding:16px;border-radius:12px;
+                   font-weight:bold;box-shadow:0 0 22px #ff3c73a5;margin-top:32px;}
+
+        /* Bouton retour */
+        .back-btn{
+            display:inline-block;margin-top:34px;padding:14px 34px;
+            background:linear-gradient(90deg,#ff9f29 20%,#ff3844 100%);
+            color:#fffbe3;font-weight:bold;border:none;border-radius:12px;
+            text-decoration:none;font-size:1.1em;box-shadow:0 0 18px #ff9f2970;
+            transition:background .15s;}
+        .back-btn:hover{background:linear-gradient(90deg,#ff3844 10%,#ff9f29 100%);color:#fffd6b;}
+    </style>
+</head>
+
+<body>
+    <div class="verify-card">
+        <h1>🔍 Vérifier mon paiement</h1>
+
+        <!-- Formulaire -->
+        <form method="get" action="/verifier-paiement" class="verify-form">
+            <input type="text" name="txn_id" id="txn_id" required
+              placeholder="ex : PP250705.0929.D79213"
+              pattern="^[PM][PM]\d{6}\.\d{4}\.[A-Z0-9]{6}$"
+              title="Format : PP250705.0929.D79213"
+              maxlength="20">
+            <button type="submit">✅ Vérifier</button>
+        </form>
+
+        {% if txn_id and not payment %}
+            <div class="error-msg">❌ Aucun paiement trouvé pour l’ID « {{ txn_id }} »</div>
+        {% endif %}
+
+        {% if payment %}
+      <div class="result-box">
+          <h2>✅ Paiement trouvé</h2>
+
+          <div class="info-line"><span class="info-label">ID&nbsp;:</span><span>{{ payment.txn_id }}</span></div>
+          <div class="info-line"><span class="info-label">Opérateur&nbsp;:</span><span>{{ payment.operator }}</span></div>
+          <div class="info-line"><span class="info-label">Montant&nbsp;:</span><span>{{ payment.amount }}&nbsp;F&nbsp;CFA</span></div>
+
+          <div class="info-line"><span class="info-label">Nom&nbsp;:</span><span>{{ payment.client_name }}</span></div>
+          <div class="info-line"><span class="info-label">Téléphone&nbsp;:</span><span>{{ payment.client_phone }}</span></div>
+
+          <div class="info-line"><span class="info-label">Date/Heure&nbsp;:</span>
+              <span>{{ payment.validated_at.strftime('%d/%m/%Y %H:%M') }}</span></div>
+
+          <div class="info-line"><span class="info-label">État&nbsp;:</span>
+              <span>{% if payment.is_used %}Utilisé{% else %}Disponible{% endif %}</span></div>
+      </div>
+      {% endif %}
+
+        <a href="/" class="back-btn">🏠 Retour à l’accueil</a>
+    </div>
+</body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tx = document.getElementById('txn_id');
+
+        tx.addEventListener('input', () => {
+            // 1. enlève tout sauf lettres/chiffres, passe en majuscule
+            let v = tx.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+
+            // 2. insère le 1er point après 8 car., le 2ᵉ après 13
+            if (v.length > 8)  v = v.slice(0, 8)  + '.' + v.slice(8);
+            if (v.length > 13) v = v.slice(0, 13) + '.' + v.slice(13);
+
+            // 3. tronque à 20 (PPxxxxxx.xx.xx -> 20 incluant deux “.”)
+            tx.value = v.slice(0, 20);
+        });
+    });
+</script>
+</html>

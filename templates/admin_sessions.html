@@ -1,0 +1,135 @@
+{% extends "admin_base.html" %}
+{% block title %}Sessions en cours - PlayHub32{% endblock %}
+
+{% block main_content %}
+    <style>
+        .sessions-table {
+            width: 100%;
+            background: rgba(16,19,38,0.92);
+            border-radius: 18px;
+            box-shadow: 0 0 36px #13ffe2bb, 0 0 0 #fff;
+            margin: 30px auto 0 auto;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.5em;
+        }
+        th, td {
+            padding: 15px 9px;
+            text-align: center;
+            font-size: 1.09em;
+            border-radius: 10px;
+        }
+        th {
+            background: #191c30;
+            color: #13ffe2;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 1.18em;
+            letter-spacing: 1.1px;
+            text-shadow: 0 0 7px #13ffe244;
+        }
+        td {
+            background: #1d2040c8;
+            color: #fff;
+        }
+        .badge {
+            padding: 6px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 1em;
+        }
+        .PENDING   { background: linear-gradient(90deg,#f7b731,#ffe66b 90%); color:#442d00;}
+        .PAID      { background: linear-gradient(90deg,#074779,#031b20 90%);}
+        .FREE      { background: linear-gradient(90deg,#021b0a,#10833a 90%); color:#0b2216;}
+        .PAUSED      { background: linear-gradient(90deg,#021b0a,#ff384488 90%); color:#ff384488;}
+        .FINISHED  { background:linear-gradient(90deg,#a7a7a7 60%,#efefef 100%);color:#181818;}
+        .actions {
+            display: flex; justify-content: center; gap: 10px;
+        }
+        .stop-btn {
+            background: linear-gradient(90deg,#e74c3c,#ff3844 90%);
+            color: #fff; font-weight: bold;
+            border: none; border-radius: 7px;
+            font-size: 1.04em; padding: 8px 22px;
+            cursor: pointer; box-shadow: 0 0 8px #ff384488;
+            transition: background 0.18s, color 0.15s;
+        }
+        .stop-btn:hover {
+            background: linear-gradient(90deg,#ff3844,#e74c3c 90%);
+            color: #fffd6b;
+        }
+        .history-btn {
+            background: linear-gradient(90deg,#0e1626 60%,#1fd1f9 130%);
+            color:#fff; font-weight:bold;
+            border:none; border-radius:7px;
+            font-size:1.04em; padding:8px 22px;
+            cursor:pointer; box-shadow:0 0 8px #1fd1f9a9;
+            transition:background 0.17s,color 0.15s;
+            margin-left:7px;
+        }
+        .history-btn:hover {
+            background: linear-gradient(90deg,#1fd1f9,#0e1626 100%);
+            color:#13ffe2;
+        }
+    </style>
+
+    <h1 style="color:#13ffe2;text-shadow:0 0 14px #13ffe2b8,0 0 4px #ff3c73bb;text-align:center;margin-bottom:28px;font-family:'Orbitron',Arial,sans-serif;">
+        🎮 Sessions en cours
+    </h1>
+
+    <div class="sessions-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Poste</th>
+                    <th>Référence</th>
+                    <th>Jour</th>
+                    <th>Début</th>
+                    <th>Durée totale</th>
+                    <th>Temps restant</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for sess in sessions %}
+                <tr>
+                    <td>{{ sess.station_id }}</td>
+                    <td>{{ sess.ref_code or '–' }}</td>
+                    <td>
+                        {% if sess.start_at %}
+                            {{ sess.start_at.strftime('%a %d/%m/%Y') }}
+                        {% else %}
+                            –
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sess.start_at %}
+                            {{ sess.start_at.strftime('%H:%M') }}
+                        {% else %}
+                            –
+                        {% endif %}
+                    </td>
+                    <td>{{ sess.minutes_total }} min</td>
+                    <td>{{ sess.minutes_total - sess.minutes_used  }} min</td>
+                    <td><span class="badge {{ sess.status }}">{{ sess.status }}</span></td>
+                    <td class="actions">
+                        <form method="post" action="/admin/pause-session" style="display:inline;">
+                            <input type="hidden" name="ref_code" value="{{ sess.ref_code }}">
+                            <button type="submit" class="stop-btn">PAUSED</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" style="color:#888;">Aucune session en cours</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

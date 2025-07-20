@@ -1,0 +1,196 @@
+{% macro navbar() %}
+<nav class="fixed top-4 right-4 flex gap-6 text-lg font-extrabold select-none z-50 gamer-navbar">
+  <a href="/" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/80 text-green-400 hover:bg-green-600 hover:text-white shadow-md transition">
+    <span>🏠</span> <span>Accueil</span>
+  </a>
+  <a href="/games" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/80 text-blue-400 hover:bg-blue-600 hover:text-white shadow-md transition">
+    <span>🎮</span> <span>Jeux</span>
+  </a>
+  <a href="/extend" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/80 text-yellow-300 hover:bg-yellow-500 hover:text-black shadow-md transition">
+    <span>⏱️</span> <span>Prolonger</span>
+  </a>
+</nav>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <title>Prolongation – PlayHub 32</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <!-- Orbitron: effet gamer -->
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #ff5100; --dark-overlay: rgba(0,0,0,0.77);}
+    body {
+      background: url('/static/images/acceuil.png') center/cover no-repeat;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--dark-overlay);
+      z-index: -1;
+    }
+    .gamer-block {
+      border: 2.5px solid;
+      border-image: linear-gradient(90deg, #ff5100, #ffcf00, #06f6f5, #ff5100) 1;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.95), 0 0 32px #ff5100b0;
+      background: linear-gradient(110deg, rgba(28,27,28,0.98) 60%, rgba(10,10,10,0.93) 100%);
+      backdrop-filter: blur(9px);
+    }
+    .gamer-title {
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 8px #ff5100, 0 0 20px #000;
+      letter-spacing: 2px;
+    }
+    .btn-gamer {
+      transition: box-shadow 0.2s, filter 0.2s, background 0.2s;
+    }
+    .btn-gamer:focus, .btn-gamer:hover {
+      filter: brightness(1.12);
+      box-shadow: 0 0 14px 4px #ff5100aa, 0 0 4px #fff;
+    }
+    /* Pour navbar */
+    .gamer-navbar a {
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 1px 8px #000, 0 0 5px #06f6f5;
+      letter-spacing: 1px;
+      border-bottom: 2px solid transparent;
+      transition: border 0.2s, background 0.2s;
+    }
+    .gamer-navbar a:hover {
+      border-bottom: 2px solid #ff5100;
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center px-4">
+
+  {{ navbar() }}
+
+  <div class="relative gamer-block p-12 rounded-3xl max-w-xl w-full text-center shadow-2xl mt-10">
+    <h1 class="text-4xl md:text-1xl font-extrabold mb-10 text-white gamer-title tracking-wider flex items-center justify-center gap-3" style="white-space:nowrap">
+     <span>⏱️</span>
+     <span>Prolonger ma session</span>
+     </h1>
+
+    <form class="space-y-6 text-left" x-data="extendFlow()" x-init="init()" autocomplete="off">
+      <label class="block text-white">
+        <span class="block mb-1 text-base font-bold tracking-wider">Référence ticket</span>
+        <input
+          type="text"
+          x-model="ref"
+          maxlength="8"
+          minlength="8"
+          class="mt-1 block w-full rounded-xl px-5 py-3 bg-neutral-900 border-2 border-[#ff5100] text-[1.2rem] text-white placeholder-[#ffcf00] font-bold focus:outline-none focus:ring-2 focus:ring-[var(--brand)] transition gamer-title shadow-md"
+          placeholder="🎟️ Code à 8 caractères"
+          required
+        />
+      </label>
+
+      <label class="block text-white">
+        <span class="block mb-1 text-base font-bold tracking-wider">Durée supplémentaire</span>
+        <select
+          x-model.number="extension"
+          class="mt-1 block w-full rounded-xl px-5 py-3 bg-neutral-900 border-2 border-[#06f6f5] text-[1.1rem] text-white gamer-title font-bold focus:outline-none focus:ring-2 focus:ring-[#06f6f5] transition shadow-md"
+          required
+        >
+          <option value="" disabled>Choisissez…</option>
+          <option value="15">🕒 15 min (1 000 F)</option>
+          <option value="60">⏰ 1 h (2 000 F)</option>
+          <option value="120">🚀 2 h (3 500 F)</option>
+        </select>
+      </label>
+
+      <label class="block text-white">
+        <span class="block mb-1 text-base font-bold tracking-wider">Numéro de téléphone</span>
+        <div class="flex mt-1 shadow-md">
+          <span class="inline-flex items-center gap-1 px-3 rounded-l-xl bg-neutral-900 border-2 border-[#06f6f5] text-white gamer-title">
+            <img src="/static/images/flag_cm.png" alt="CM" class="h-5 w-5"> +237
+          </span>
+          <input
+            type="text"
+            x-model="phone"
+            maxlength="9"
+            pattern="6\\d{8}"
+            class="flex-1 rounded-r-xl px-4 py-3 bg-neutral-900 border-2 border-l-0 border-[#06f6f5] text-white placeholder-[#06f6f5] gamer-title text-[1.1rem] font-bold focus:outline-none focus:ring-2 focus:ring-[#06f6f5] transition"
+            placeholder="6x xx xx xx"
+            required
+          />
+        </div>
+      </label>
+
+      <fieldset class="text-white">
+        <legend class="mb-1 text-base font-bold tracking-wider">Opérateur</legend>
+        <div class="mt-1 flex gap-4">
+          <label class="inline-flex items-center gap-2 bg-neutral-900 px-5 py-3 rounded-xl cursor-pointer gamer-title shadow-md hover:bg-neutral-700 transition border-2 border-[#ff5100]">
+            <input type="radio" x-model="operator" value="mtn" class="form-radio text-[var(--brand)] accent-[#ff5100] scale-125" />
+            <span class="text-[#06f6f5] font-extrabold">MTN MoMo</span>
+          </label>
+          <label class="inline-flex items-center gap-2 bg-neutral-900 px-5 py-3 rounded-xl cursor-pointer gamer-title shadow-md hover:bg-neutral-700 transition border-2 border-[#ffcf00]">
+            <input type="radio" x-model="operator" value="orange" class="form-radio text-yellow-400 accent-yellow-400 scale-125" />
+            <span class="text-yellow-300 font-extrabold">Orange Money</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <button
+        type="button"
+        @click="submit()"
+        :disabled="!canSubmit"
+        class="mt-7 w-full px-8 py-4 bg-[var(--brand)] text-white gamer-title text-2xl font-extrabold rounded-2xl hover:opacity-90 disabled:opacity-50 transition btn-gamer shadow-xl tracking-widest"
+      >
+        ⚡ Prolonger & payer
+      </button>
+
+      <template x-if="error">
+        <div class="mt-6 text-red-500 font-extrabold drop-shadow-lg gamer-title text-center text-lg">{{ error }}</div>
+      </template>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('extendFlow', () => ({
+        ref: '',
+        extension: null,
+        phone: '',
+        operator: '',
+        error: '',
+
+        get canSubmit() {
+          return (
+            this.ref.length === 8 &&
+            [15, 60, 120].includes(this.extension) &&
+            /^6\d{8}$/.test(this.phone) &&
+            ['mtn', 'orange'].includes(this.operator)
+          );
+        },
+
+        init() {},
+
+        async submit() {
+          this.error = '';
+          try {
+            const form = new URLSearchParams();
+            form.append('ref_code', this.ref);
+            form.append('extension', this.extension);
+            form.append('phone', this.phone);
+            form.append('operator', this.operator);
+            await fetch('/session/extend', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: form
+            });
+            window.location.href = `/payment/${this.ref}`;
+          } catch (e) {
+            this.error = e.message || 'Erreur lors de la prolongation';
+          }
+        }
+      }));
+    });
+  </script>
+</body>
+</html>
