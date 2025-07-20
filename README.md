@@ -48,7 +48,7 @@ It connects real-time player management, mobile payments, flexible sessions, and
 - **Printing**: Thermal printer integration (ESC/POS, styled receipts with QR codes)
 
 ---
-
+![Admin Features Screen](screenshot/admin.png)
 ## 🛡️ Admin Features
 
 ### 1. Payment Validation & Control
